@@ -106,7 +106,7 @@ function PlaceDetails() {
 		<main>
 			<div className="row">
 				<div className="col-sm-6">
-					<img style={{ maxWidth: 400 }} src={place.pic} alt={place.name} />
+					<img style={{ maxWidth: 200 }} src={place.pic} alt={place.name} />
 					<h3>
 						Located in {place.city}, {place.state}
 					</h3>
