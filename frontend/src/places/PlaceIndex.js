@@ -1,47 +1,61 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import { useHistory } from "react-router";
 
 function PlaceIndex(data) {
+  const history = useHistory();
 
-	const history = useHistory()
-	
-	const [places, setPlaces] = useState([])
+  const [places, setPlaces] = useState([]);
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const response = await fetch(`http://localhost:5000/places`)
-			const resData = await response.json()
-			setPlaces(resData)
-		}
-		fetchData()
-	}, [])
+  useEffect(() => {
+    // Fetch data when the component mounts
 
-	let placesFormatted = places.map((place) => {
-		return (
-			<div className="col-sm-6" key={place.placeId}>
-				<h2>
-					<a href="#" onClick={() => history.push(`/places/${place.placeId}`)} >
-						{place.name}
-					</a>
-				</h2>
-				<p className="text-center">
-					{place.cuisines}
-				</p>
-				<img style={{ maxWidth: 200 }} src={place.pic} alt={place.name} />
-				<p className="text-center">
-					Located in {place.city}, {place.state}
-				</p>
-			</div>
-		)
-	})
-	return (
-		<main>
-			<h1>Places to Rant or Rave About</h1>
-			<div className="row">
-				{placesFormatted}
-			</div>
-		</main>
-	)
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_SERVER_URL}places`
+        );
+
+        if (response.ok) {
+          const resData = await response.json();
+
+          setPlaces(resData);
+        } else {
+          console.error("Error fetching data");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const placesFormatted = places.map((place) => (
+    <div className="col-sm-6" key={place.placeId}>
+      <h2>
+        <a href="#" onClick={() => history.push(`/places/${place.placeId}`)}>
+          {place.name}
+        </a>
+      </h2>
+
+      <p className="text-center">{place.cuisines}</p>
+
+      <img style={{ maxWidth: 200 }} src={place.pic} alt={place.name} />
+
+      <p className="text-center">
+        Located in {place.city}, {place.state}
+      </p>
+    </div>
+  ));
+
+  return (
+    <main>
+      <h1>Places to Rant or Rave About</h1>
+
+      <div className="row">{placesFormatted}</div>
+    </main>
+  );
 }
 
 export default PlaceIndex;
